@@ -21,19 +21,19 @@ class Post
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable="false")
+     * @ORM\Column(type="string", nullable=false)
      * @Assert\Length(min=10, max=255)
      */
     private $title;
 
     /**
-     * @ORM\Column(type="text", nullable="false")
+     * @ORM\Column(type="text", nullable=false)
      *
      */
     private $body;
 
     /**
-     * @ORM\Column(type="string", nullable="false")
+     * @ORM\Column(type="string", nullable=false)
      */
     private $slug;
 

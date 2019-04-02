@@ -1,12 +1,14 @@
 <?php
 
 namespace App\DataFixtures;
-namespace App\Entity;
 
-use Cocur\Slugify\Slugify;
+
+
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Entity\Post;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Cocur\Slugify\Slugify;
 
 class AppFixtures extends Fixture
 {

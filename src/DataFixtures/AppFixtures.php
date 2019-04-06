@@ -15,10 +15,16 @@ class AppFixtures extends Fixture
     private $faker;
     private $slug;
 
-    public function __construct()
+    public function __construct(Slugify $slugify)
     {
         $this->faker = Factory::create();
-        $this->slug = Slugify::create();
+
+        //если не прописывать в config/services.yaml Slugify, то надо так:
+        //$this->slug = Slugify::create();
+        // и + убрать из __construct аргумент
+
+        //если в config/services.yaml прописан Slugify + в __construct добавить аргумент
+        $this->slug = $slugify;
     }
 
     public function load(ObjectManager $manager)

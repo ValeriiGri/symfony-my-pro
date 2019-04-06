@@ -49,4 +49,20 @@ class PostsController extends AbstractController
         return $this->render('posts/index.html.twig', [
             'posts' => $posts]);
     }
+
+    /**
+     * @Route("/posts/{slug}", name="blog_show")
+     */
+
+    /*В первую очередь обратите внимание на роутинг. Я уже упоминал в одном из первых уроков,
+    что значения, заключенные в фигурные скобки, называются плейсхолдерами -
+    они меняются в зависимости от запроса пользователя. А ещё, Symfony достаточно умный, чтобы понимать,
+    по какому критерию вы достаёте данные, так что если вы напишите вместо slug id, title или body,
+    он отдаст вам нужные данные конкретного поста! Всё это происходит благодаря аннотации ParamConverter,
+    которую в нашем случае использовать необязательно*/
+    public function post (Post $post){
+        return $this->render('posts/show.html.twig',[
+
+        'post'=> $post]);
+    }
 }

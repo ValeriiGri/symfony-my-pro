@@ -2,8 +2,13 @@
 
 {% block title %} {% endblock %}
 
+{#Обратите внимание на href, мы использовали хелпер twig path(),
+    который принимает в качестве аргументов имя маршрута
+    (это те самые имена, которые мы указывали в аннотации Route)
+    и второй аргумент для генерации динамического урла.
+     В нашем случае это slug. В фигурных скобках мы пишем, что наш slug равен post.slug#}
 {% block body %}
     {% for post in posts %}
-        <a href="#">{{ post.title }}</a><br><br>
+        <a href="{{ path('blog_show', {'slug': post.slug}) }}">{{ post.title }}</a><br><br>
     {% endfor %}
 {% endblock %}

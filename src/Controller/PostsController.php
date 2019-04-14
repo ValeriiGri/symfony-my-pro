@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Repository\PostRepository;
+use Cocur\Slugify\Slugify;
+use http\Env\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -60,9 +63,34 @@ class PostsController extends AbstractController
     по какому критерию вы достаёте данные, так что если вы напишите вместо slug id, title или body,
     он отдаст вам нужные данные конкретного поста! Всё это происходит благодаря аннотации ParamConverter,
     которую в нашем случае использовать необязательно*/
-    public function post (Post $post){
+    public function showPost (Post $post){
         return $this->render('posts/show.html.twig',[
 
         'post'=> $post]);
+    }
+
+    /**
+     * @Route("/posts/new", name="new_blog_post")
+     */
+    public function addPost (Request $request, Slugify $slugify){
+        # Сначала мы создаём объект нашей сущности, которую и будем сохранять
+        $post = new Post();
+
+        # Дальше мы создаём форму с помощью метода createForm,
+        # который обязательным параметром принимает наш класс PostType и объект класса Post
+        $form = $this->createForm(PostType::class, $post);
+
+        # Далее мы обрабатываем наш $request с помощью метода handleRequest,
+        # который стал нам доступен после создания инстанса формы
+        $form->handleRequest($request);
+
+        # Теперь мы проверяем, нажата ли кнопка под формой и является ли она валидной
+        # в соответствии с теми правилами валидации, которые мы применили к нашей сущности.
+        # Если оба этих условия выполняются, мы устанавливаем slug с помощью уже известного нам метода slugify,
+        # куда передаём title статьи. Время для поля created_at берём текущее,
+        # которое возвращает нам объект класса DateTime() по умолчанию
+        if($form->isSubmitted() && $form->isValid()){
+            $post->setSlug($slugify->slugify($post->getTitle()));
+        }
     }
 }

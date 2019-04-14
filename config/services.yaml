@@ -24,8 +24,15 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\DataFixtures\AppFixtures:
-        $slugify: 'Cocur\Slugify\Slugify'
+    # надо зарегистрировать класс Slugify как сервис и 2 строки ниже можно убрать
+    # Теперь мы зарегистрировали класс как сервис, а не как аргумент другого класса,
+    # в результате чего он стал нам доступен глобально
+    Cocur\Slugify\Slugify:
+        #Строка autowire: true позволяет переложить на Symfony автоматическую загрузку нашего сервиса
+        autowire: true
+
+    # App\DataFixtures\AppFixtures:
+    # $slugify: 'Cocur\Slugify\Slugify'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

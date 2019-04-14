@@ -91,6 +91,20 @@ class PostsController extends AbstractController
         # которое возвращает нам объект класса DateTime() по умолчанию
         if($form->isSubmitted() && $form->isValid()){
             $post->setSlug($slugify->slugify($post->getTitle()));
+
+            # Вызываем наш Manager, подготавливаем (persist) и сохраняем пост (flush).
+            # После сохранения редиректим пользователя на страницу со всеми постами
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($post);
+            $em->flush();
+
+            return $this->redirectToRoute('blog_posts');
         }
+
+        # А сам метод addPosts() возвращает шаблон, куда в качестве аргумента передаём $form->createView().
+        # Этот метод создаст саму форму в нашей вёрстке
+
+        return $this->render('posts/new.html.twig', [
+            'form' => $form->createView()]);
     }
 }

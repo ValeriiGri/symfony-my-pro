@@ -8,7 +8,8 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use Cocur\Slugify\Slugify;
-use http\Env\Request;
+//use http\Env\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -54,7 +55,7 @@ class PostsController extends AbstractController
     }
 
     /**
-     * @Route("/posts/{slug}", name="blog_show")
+     * @Route("/posts/show/{slug}", name="blog_show")
      */
 
     /*В первую очередь обратите внимание на роутинг. Я уже упоминал в одном из первых уроков,
@@ -70,9 +71,15 @@ class PostsController extends AbstractController
     }
 
     /**
-     * @Route("/posts/new", name="new_blog_post")
+     * @Route("/posts/add/new", name="new_blog_post")
+     * @param Request $request
+     * @param Slugify $slugify
+     *
      */
+
+
     public function addPost (Request $request, Slugify $slugify){
+        dump('111111');
         # Сначала мы создаём объект нашей сущности, которую и будем сохранять
         $post = new Post();
 
@@ -91,6 +98,7 @@ class PostsController extends AbstractController
         # которое возвращает нам объект класса DateTime() по умолчанию
         if($form->isSubmitted() && $form->isValid()){
             $post->setSlug($slugify->slugify($post->getTitle()));
+            $post->setCreatedAt(new \DateTime());
 
             # Вызываем наш Manager, подготавливаем (persist) и сохраняем пост (flush).
             # После сохранения редиректим пользователя на страницу со всеми постами

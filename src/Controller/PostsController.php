@@ -55,23 +55,7 @@ class PostsController extends AbstractController
     }
 
     /**
-     * @Route("/posts/show/{slug}", name="blog_show")
-     */
-
-    /*В первую очередь обратите внимание на роутинг. Я уже упоминал в одном из первых уроков,
-    что значения, заключенные в фигурные скобки, называются плейсхолдерами -
-    они меняются в зависимости от запроса пользователя. А ещё, Symfony достаточно умный, чтобы понимать,
-    по какому критерию вы достаёте данные, так что если вы напишите вместо slug id, title или body,
-    он отдаст вам нужные данные конкретного поста! Всё это происходит благодаря аннотации ParamConverter,
-    которую в нашем случае использовать необязательно*/
-    public function showPost (Post $post){
-        return $this->render('posts/show.html.twig',[
-
-        'post'=> $post]);
-    }
-
-    /**
-     * @Route("/posts/add/new", name="new_blog_post")
+     * @Route("/posts/new", name="new_blog_post")
      * @param Request $request
      * @param Slugify $slugify
      *
@@ -114,5 +98,46 @@ class PostsController extends AbstractController
 
         return $this->render('posts/new.html.twig', [
             'form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/posts/{slug}/edit", name="blog_post_edit")
+     */
+
+    public function edit(Post $post, Request $request, Slugify $slugify){
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $post->setSlug($slugify->slugify($post->getTitle()));
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            return $this->redirectToRoute('blog_show',[
+                'slug' => $post->getSlug()
+            ]);
+        }
+
+        return $this->render('posts/new.html.twig', [
+            'form'=> $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/posts/{slug}", name="blog_show")
+     */
+
+    /*В первую очередь обратите внимание на роутинг. Я уже упоминал в одном из первых уроков,
+    что значения, заключенные в фигурные скобки, называются плейсхолдерами -
+    они меняются в зависимости от запроса пользователя. А ещё, Symfony достаточно умный, чтобы понимать,
+    по какому критерию вы достаёте данные, так что если вы напишите вместо slug id, title или body,
+    он отдаст вам нужные данные конкретного поста! Всё это происходит благодаря аннотации ParamConverter,
+    которую в нашем случае использовать необязательно*/
+
+    //этот метод дб последним, чтобы не вызывался вместо того у которого Route /posts/...
+    public function showPost (Post $post){
+        return $this->render('posts/show.html.twig',[
+
+            'post'=> $post]);
     }
 }
